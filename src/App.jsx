@@ -7,9 +7,15 @@ import { useState } from "react";
 
 function App() {
   const [colors, setColors] = useState(initialColors);
+  const emptyList = colors.length === 0;
 
   function handleAddColor(newColor) {
     setColors([{ id: uid(), ...newColor }, ...colors]);
+  }
+
+  function handleDeleteColor(id) {
+    const newColorList = colors.filter((color) => color.id !== id);
+    setColors(newColorList);
   }
 
   return (
@@ -20,8 +26,15 @@ function App() {
       <br />
 
       {colors.map((color) => {
-        return <Color key={color.id} color={color} />;
+        return (
+          <Color
+            key={color.id}
+            color={color}
+            onDeleteColor={handleDeleteColor}
+          />
+        );
       })}
+      {emptyList && "No colors...start by adding one!"}
     </>
   );
 }
