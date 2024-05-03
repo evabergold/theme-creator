@@ -7,6 +7,7 @@ import { useState } from "react";
 
 function App() {
   const [colors, setColors] = useState(initialColors);
+
   const emptyList = colors.length === 0;
 
   function handleAddColor(newColor) {
@@ -16,6 +17,15 @@ function App() {
   function handleDeleteColor(id) {
     const newColorList = colors.filter((color) => color.id !== id);
     setColors(newColorList);
+  }
+
+  function handleEditColor(editedColor) {
+    setColors(
+      colors.map((color) => {
+        if (color.id === editedColor.id) return editedColor;
+        return color;
+      })
+    );
   }
 
   return (
@@ -31,6 +41,7 @@ function App() {
             key={color.id}
             color={color}
             onDeleteColor={handleDeleteColor}
+            onEditColor={handleEditColor}
           />
         );
       })}
@@ -38,5 +49,4 @@ function App() {
     </>
   );
 }
-
 export default App;
