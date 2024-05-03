@@ -1,10 +1,12 @@
 import "./Color.css";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import ColorForm from "../ColorForm/ColorForm.jsx";
+import { writeClipboardText } from "../CopyToClipboard.jsx";
 
 export default function Color({ color, onDeleteColor, onEditColor }) {
   const [showConfirmation, setShowConfirmation] = useState(false);
   const [editMode, setEditMode] = useState(false);
+  const [copyMode, setCopyMode] = useState(false);
 
   function handleDelete() {
     if (showConfirmation === false) {
@@ -25,6 +27,23 @@ export default function Color({ color, onDeleteColor, onEditColor }) {
     setEditMode(false);
   }
 
+  function handleCopy() {
+    setCopyMode(true);
+    writeClipboardText(color.hex);
+  }
+
+  useEffect(() => {
+    let timeoutId;
+    if (copyMode) {
+      timeoutId = setTimeout(() => {
+        setCopyMode(false);
+      }, 3000);
+    }
+    return () => {
+      clearTimeout(timeoutId);
+    };
+  }, [copyMode]);
+
   return (
     <div
       className="color-card"
@@ -34,8 +53,12 @@ export default function Color({ color, onDeleteColor, onEditColor }) {
       }}
     >
       <h3 className="color-card-highlight">{color.hex}</h3>
+      <button onClick={handleCopy}>
+        {copyMode ? "SUCCESSFULLY COPIED!" : "COPY"}
+      </button>
       <h4>{color.role}</h4>
       <p>contrast: {color.contrastText}</p>
+
       {editMode && (
         <>
           <ColorForm
