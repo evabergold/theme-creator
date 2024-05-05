@@ -9,3 +9,18 @@
   background: black;
   color: white;
 }
+
+.color-contrast-yup {
+  color: black;
+  background: green;
+}
+
+.color-contrast-kinda {
+  color: black;
+  background: orange;
+}
+
+.color-contrast-nope {
+  color: black;
+  background: red;
+}

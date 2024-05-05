@@ -7,6 +7,7 @@ export default function Color({ color, onDeleteColor, onEditColor }) {
   const [showConfirmation, setShowConfirmation] = useState(false);
   const [editMode, setEditMode] = useState(false);
   const [copyMode, setCopyMode] = useState(false);
+  const [checkContrast, setCheckContrast] = useState("");
 
   function handleDelete() {
     if (showConfirmation === false) {
@@ -44,6 +45,23 @@ export default function Color({ color, onDeleteColor, onEditColor }) {
     };
   }, [copyMode]);
 
+  useEffect(() => {
+    async function checkContrastStatus() {
+      const response = await fetch(
+        "https://www.aremycolorsaccessible.com/api/are-they",
+        {
+          method: "POST",
+          body: JSON.stringify({ colors: [color.hex, color.contrastText] }),
+          type: "application/json",
+        }
+      );
+      const result = await response.json();
+      console.log(result.overall);
+      setCheckContrast(result.overall);
+    }
+    checkContrastStatus();
+  }, [color.hex, color.contrastText]);
+
   return (
     <div
       className="color-card"
@@ -58,6 +76,20 @@ export default function Color({ color, onDeleteColor, onEditColor }) {
       </button>
       <h4>{color.role}</h4>
       <p>contrast: {color.contrastText}</p>
+      <span
+        className={`${
+          checkContrast === "Yup"
+            ? "color-contrast-yup"
+            : checkContrast === "Nope"
+            ? "color-contrast-nope"
+            : checkContrast === "Kinda"
+            ? "color-contrast-kinda"
+            : ""
+        }`}
+      >
+        Overall Contrast Status: {checkContrast}
+      </span>
+      <br />
 
       {editMode && (
         <>
